@@ -238,11 +238,6 @@ tRemoteStatus::tRemoteStatus(string_view s, int errorCode, bool stripHttpPrefix)
 		auto tok = split.view();
 		ok = !tok.empty() && 0 != (code = svtol(tok, 0));
 	}
-	if (ok)
-	{
-		msg = split.right();
-		ok = !msg.empty();
-	}
 	if (!ok)
 	{
 		code = errorCode;

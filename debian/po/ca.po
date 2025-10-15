@@ -1,0 +1,249 @@
+# Catalan translation of apt-cacher-ng's debconf messages
+# Copyright © 2025 poc senderi <pocsenderi@protonmail.com>
+# This file is distributed under the same license as the apt-cacher-ng package.
+# poc senderi <pocsenderi@protonmail.com>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: apt-cacher-ng\n"
+"Report-Msgid-Bugs-To: apt-cacher-ng@packages.debian.org\n"
+"POT-Creation-Date: 2015-03-17 19:19+0100\n"
+"PO-Revision-Date: 2025-10-15 07:45+0200\n"
+"Last-Translator: poc senderi <pocsenderi@protonmail.com>\n"
+"Language-Team: Catalan <debian-l10n-catalan@lists.debian.org>\n"
+"Language: ca\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.2.2\n"
+
+#. Type: select
+#. Choices
+#: ../apt-cacher-ng.templates:2001
+msgid "Set up once"
+msgstr "Configura un sol cop"
+
+#. Type: select
+#. Choices
+#: ../apt-cacher-ng.templates:2001
+msgid "Set up now and update later"
+msgstr "Configura ara i actualitza posteriorment"
+
+#. Type: select
+#. Choices
+#: ../apt-cacher-ng.templates:2001
+msgid "No automated setup"
+msgstr "Sense configuració automatitzada"
+
+#. Type: select
+#. Description
+#: ../apt-cacher-ng.templates:2002
+msgid "Automatic remapping of client requests:"
+msgstr "Remapejat automàtic de les peticions dels clients:"
+
+#. Type: select
+#. Description
+#: ../apt-cacher-ng.templates:2002
+msgid ""
+"Apt-Cacher NG can download packages from repositories other than those "
+"requested by the clients. This allows it to cache content effectively, and "
+"makes it easy for an administrator to switch to another mirror later. The "
+"URL remapping can be set up automatically, using a configuration based on "
+"the current state of /etc/apt/sources.list."
+msgstr ""
+"L'Apt-Cacher NG pot descarregar paquets de repositoris diferents dels "
+"demanats pels clients. Això li permet reusar contingut de manera efectiva i "
+"també facilita a l'administrador el canviar més tard a una altra rèplica. El "
+"remapejat d'URL es pot establir automàticament, usant una configuració "
+"basada en l'estat actual de «/etc/apt/sources.list»."
+
+#. Type: select
+#. Description
+#: ../apt-cacher-ng.templates:2002
+msgid ""
+"Please specify whether the remapping should be configured once now, or "
+"reconfigured on every update of Apt-Cacher NG (modifying the configuration "
+"files each time), or left unconfigured."
+msgstr ""
+"Especifiqueu si el remapejat s'ha de configurar només ara, o s'ha de "
+"reconfigurar a cada actualització de l'Apt-Cacher NG (modificant els fitxers "
+"de configuració cada cop), o deixar-ho sense configurar."
+
+#. Type: select
+#. Description
+#: ../apt-cacher-ng.templates:2002
+msgid ""
+"Selecting \"No automated setup\" will leave the existing configuration "
+"unchanged. It will need to be updated manually."
+msgstr ""
+"Seleccionar «Sense configuració automatitzada» no modificarà la configuració "
+"existent. Caldrà actualitzar-la manualment."
+
+#. Type: string
+#. Description
+#: ../apt-cacher-ng.templates:3001
+msgid "Listening address(es) for Apt-Cacher NG:"
+msgstr "Adreça/ces on ha d'escoltar l'Apt-Cacher NG:"
+
+#. Type: string
+#. Description
+#: ../apt-cacher-ng.templates:3001
+msgid ""
+"Please specify the local addresses that Apt-Cacher NG should listen on "
+"(multiple entries must be separated by spaces)."
+msgstr ""
+"Especifiqueu les adreces locals per on hauria d'escoltar l'Apt-Cacher NG (en "
+"cas de múltiples entrades, cal separar-les amb espais)."
+
+#. Type: string
+#. Description
+#: ../apt-cacher-ng.templates:3001
+msgid ""
+"Each entry must be an IP address or hostname associated with a local network "
+"interface. Generic protocol-specific addresses are also supported, such as "
+"0.0.0.0 for listening on all IPv4-enabled interfaces."
+msgstr ""
+"Cada entrada ha de ser una adreça IP o nom d'amfitrió associada a una "
+"interfície local de xarxa. Les adreces específiques d'un protocol també són "
+"acceptades, com ara 0.0.0.0 per a escoltar a totes les interfícies amb "
+"l'IPv4 activat."
+
+#. Type: string
+#. Description
+#: ../apt-cacher-ng.templates:3001
+msgid ""
+"If this field is left empty, Apt-Cacher NG will listen on all interfaces, "
+"with all supported protocols."
+msgstr ""
+"Si es deixa aquest camp en blanc, l'Apt-Cacher NG escoltarà en totes les "
+"interfícies, amb tots els protocols compatibles."
+
+#. Type: string
+#. Description
+#. Type: string
+#. Description
+#: ../apt-cacher-ng.templates:3001 ../apt-cacher-ng.templates:6001
+msgid ""
+"The special word \"keep\" keeps the value from the current (or default) "
+"configuration unchanged."
+msgstr ""
+"El mot especial «keep» manté el valor sense modificació el valor actual (o "
+"predeterminat) de la configuració."
+
+#. Type: string
+#. Description
+#: ../apt-cacher-ng.templates:4001
+msgid "Listening TCP port:"
+msgstr "Port TCP on escoltar:"
+
+#. Type: string
+#. Description
+#: ../apt-cacher-ng.templates:4001
+msgid ""
+"Please specify the TCP port that Apt-Cacher NG should listen on for incoming "
+"HTTP (proxy) requests. The default value is port 3142, but it can be set to "
+"9999 to emulate apt-proxy."
+msgstr ""
+"Especifiqueu el port TCP per on ha d'esperar l'Apt-Cacher NG les peticions "
+"HTTP («proxy») entrants. El valor predeterminat es el port 3142, però es pot "
+"establir al 9999 per a emular l'«apt-proxy»."
+
+#. Type: string
+#. Description
+#: ../apt-cacher-ng.templates:4001
+msgid ""
+"If this field is left empty, the value from the current configuration "
+"remains unchanged."
+msgstr ""
+"Si es deixa aquest camp en blanc, es mantindrà sense canvis el valor actual "
+"de la configuració."
+
+#. Type: string
+#. Description
+#: ../apt-cacher-ng.templates:5001
+msgid "Top-level directory for package cache:"
+msgstr "Directori arrel per a la caché de paquets:"
+
+#. Type: string
+#. Description
+#: ../apt-cacher-ng.templates:5001
+msgid ""
+"The main cache storage directory should be located on a file system without "
+"file name restrictions."
+msgstr ""
+"El directori principal d'emmagatzemament de la cache hauria d'estar en un "
+"sistema de fitxers que no imposi restriccions als noms de fitxer."
+
+#. Type: string
+#. Description
+#: ../apt-cacher-ng.templates:5001
+msgid ""
+"If this field is left empty, the value from the current configuration "
+"remains unchanged or is set to the default of /var/cache/apt-cacher-ng."
+msgstr ""
+"Si es deixa aquest camp en blanc, es mantindrà sense canvis el valor actual "
+"de la configuració o s'establirà al predeterminat «/var/cache/apt-cacher-ng»."
+
+#. Type: string
+#. Description
+#: ../apt-cacher-ng.templates:6001
+msgid "Proxy to use for downloads:"
+msgstr "Intermediari per usar en les descàrregues:"
+
+#. Type: string
+#. Description
+#: ../apt-cacher-ng.templates:6001
+msgid "Please specify the proxy server to use for downloads."
+msgstr ""
+"Especifiqueu el servidor intermediari que s'ha d'usar per a fer les "
+"descàrregues."
+
+#. Type: string
+#. Description
+#: ../apt-cacher-ng.templates:6001
+msgid ""
+"Username and password for the proxy server can be included here following "
+"the user:pass@host:port scheme. However, please check the documentation for "
+"limitations."
+msgstr ""
+"El nom d'usuari i contrasenya per al servidor intermediari es poden incloure "
+"aquí seguint l'esquema «usuari:contrasenya@amfitrió:port». No obstant això, "
+"comproveu les restriccions a la documentació."
+
+#. Type: string
+#. Description
+#: ../apt-cacher-ng.templates:6001
+msgid ""
+"If this field is left empty, Apt-Cacher NG will not use any proxy server."
+msgstr ""
+"Si aquest camp es deixa en blanc, l'Apt-Cacher no usarà cap servidor "
+"intermediari."
+
+#. Type: boolean
+#. Description
+#: ../apt-cacher-ng.templates:7001
+msgid "Allow HTTP tunnels through Apt-Cacher NG?"
+msgstr "Voleu permetre túnels HTTP a través de l'Apt-Cacher NG?"
+
+#. Type: boolean
+#. Description
+#: ../apt-cacher-ng.templates:7001
+msgid ""
+"Apt-Cacher NG can be configured to allow users to create HTTP tunnels, which "
+"can be used to access remote servers that might otherwise be blocked by (for "
+"instance) a firewall filtering HTTPS connections."
+msgstr ""
+"Es pot configurar l'Apt-Cacher NG per permetre als usuaris crear túnels "
+"HTTP, que es pot usar per a accedir a servidors remots que d'altra manera "
+"estarien bloquejats (per exemple) per un tallafoc que filtri connexions "
+"HTTPS."
+
+#. Type: boolean
+#. Description
+#: ../apt-cacher-ng.templates:7001
+msgid ""
+"This feature is usually disabled for security reasons; enable it only for "
+"trusted LAN environments."
+msgstr ""
+"Aquesta funcionalitat està normalment desactivada per motius de seguretat. "
+"Activeu-la només en entorns de xarxes locals de confiança."

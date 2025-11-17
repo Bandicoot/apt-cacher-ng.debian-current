@@ -18,7 +18,6 @@
 
 #include <iostream>
 
-#include <cstdbool>
 #include <cstdint>
 #include <cstdlib>
 #include <ctime>

@@ -26,7 +26,6 @@
 #include <list>
 #include <queue>
 
-#include <cstdbool>
 #include <cstdint>
 #include <cstdlib>
 #include <ctime>

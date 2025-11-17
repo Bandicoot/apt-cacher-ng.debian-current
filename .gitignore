@@ -13,7 +13,6 @@ murks
 dev
 dbgen/dbgenerator.tgz
 conf/zz_pt.conf
-build
 .i*
 builddir
 test/misc

@@ -4,7 +4,7 @@
 // Description : Simple FUSE-based filesystem for HTTP access (apt-cacher NG)
 //============================================================================
 
-#define FUSE_USE_VERSION 26
+#define FUSE_USE_VERSION 30
 
 #include "debug.h"
 
@@ -32,7 +32,7 @@
 #include <sys/vfs.h>
 #endif
 
-#include <fuse.h>
+#include <fuse3/fuse.h>
 
 #ifdef HAVE_DLOPEN
 #include <dlfcn.h>
@@ -517,7 +517,7 @@ public:
 
 
 /// If found as downloadable, present as a file, or become a directory otherwise.
-static int acngfs_getattr(const char *path, struct stat *stbuf)
+static int acngfs_getattr(const char *path, struct stat *stbuf, fuse_file_info*)
 {
 	if(!path)
 		return -1;
@@ -541,13 +541,6 @@ static int acngfs_getattr(const char *path, struct stat *stbuf)
 	}
 }
 
-static int acngfs_fgetattr(const char *path, struct stat *stbuf,
-	  struct fuse_file_info *)
-{
-	// FIXME: reuse the con later? or better not, size might change during operation
-	return acngfs_getattr(path, stbuf);
-}
-
 static int acngfs_access(const char *, int mask)
 {
 	// non-zero (failure) when trying to write
@@ -561,8 +554,8 @@ static int acngfs_opendir(const char *, struct fuse_file_info *)
 }
 
 static int acngfs_readdir(const char *, void *, fuse_fill_dir_t,
-	  off_t, struct fuse_file_info *)
-{   
+	  off_t, struct fuse_file_info *, fuse_readdir_flags)
+{
 	return -EPERM;
 }
 
@@ -667,7 +660,6 @@ int main(int argc, char *argv[])
 
 	memset(&acngfs_oper, 0, sizeof(acngfs_oper));
 	acngfs_oper.getattr	= acngfs_getattr;
-	acngfs_oper.fgetattr	= acngfs_fgetattr;
 	acngfs_oper.access	= acngfs_access;
 	acngfs_oper.opendir	= acngfs_opendir;
 	acngfs_oper.readdir	= acngfs_readdir;
@@ -757,31 +749,24 @@ int main(int argc, char *argv[])
 	evtimer_add(expTimer, &expTv);
 
 #ifdef HAVE_DLOPEN
-	auto pLib = dlopen("libfuse.so.2", RTLD_LAZY);
+	auto pLib = dlopen("libfuse.so.3", RTLD_LAZY);
 	if(!pLib)
 	{
-		cerr << "Couldn't find libfuse.so.2" <<endl;
+		cerr << "Couldn't find libfuse.so.3" <<endl;
 		return -1;
 	}
-	auto pFuseSetup = (decltype(&fuse_setup)) dlsym(pLib, "fuse_setup");
-	auto pFuseLoop = (decltype(&fuse_loop_mt)) dlsym(pLib, "fuse_loop_mt");
-	if(!pFuseSetup || !pFuseLoop)
+	auto pFuseMain = (decltype(&fuse_main_fn)) dlsym(pLib, "fuse_main_fn");
+	if(!pFuseMain)
 	{
-		cerr << "Error loading libfuse.so.2" <<endl;
+		cerr << "Error loading libfuse.so.3" <<endl;
 		return -2;
 	}
 #else
-	auto pFuseSetup = &fuse_setup;
-	auto pFuseLoop = &fuse_loop_mt;
+	auto pFuseMain = &fuse_main_fn;
 #endif
 
-	int mt = 1;
-	auto fs = (*pFuseSetup) (fuseArgs.size(), &fuseArgs[0],
-			&acngfs_oper, sizeof(acngfs_oper),
-			&argv[2], &mt, nullptr);
-	if (!fs)
-		return 2;
-	auto ret = (*pFuseLoop) (fs);
+	auto ret = pFuseMain(fuseArgs.size(), &fuseArgs[0],
+			&acngfs_oper, nullptr);
 	// shutdown agents in reliable fashion
 	spare_agents.clear();
 	return ret;

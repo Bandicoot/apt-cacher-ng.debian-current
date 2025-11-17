@@ -16,6 +16,24 @@ class header;
 
 class job
 {
+private:
+	// Lock controlling access to inProgress
+	static base_with_mutex inProgressLock;
+
+	// If there is an item in here then there is already a job downloading url
+	static std::set<std::string> inProgress;
+
+	// Simple class which is destroyed when the job is destroyed. It deletes the entry from inProgress.
+	struct inProgressCleanup {
+		std::string url;
+		inProgressCleanup() { }
+		~inProgressCleanup();
+	};
+
+	void setInProgress(const std::string& url_) {
+		m_ipc.url = url_;
+		inProgress.insert(url_);
+	}
 public:
 
     enum eJobResult : short
@@ -48,6 +66,7 @@ public:
     } eActivity;
 
 	TFileItemHolder m_pItem;
+	inProgressCleanup m_ipc;	// This MUST be destroyed before m_pItem
 
 	unique_fd m_filefd;    
     bool m_bIsHttp11 = true;

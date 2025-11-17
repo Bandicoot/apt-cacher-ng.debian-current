@@ -20,6 +20,7 @@
 #include <atomic>
 
 #ifdef HAVE_SSL
+#include <openssl/evp.h>
 #include <openssl/sha.h>
 #include <openssl/md5.h>
 #elif defined(HAVE_TOMCRYPT)
@@ -543,33 +544,35 @@ bool filereader::GetOneLine(string & sOut, bool bForceUncompress) {
 #ifndef MINIBUILD
 
 #ifdef HAVE_SSL
-class csumSHA1 : public csumBase, public SHA_CTX
+class csumEVP : public csumBase
 {
 public:
-	csumSHA1() { SHA1_Init(this); }
-	void add(const char *data, size_t size) override { SHA1_Update(this, (const void*) data, size); }
-	void finish(uint8_t* ret) override { SHA1_Final(ret, this); }
+	EVP_MD_CTX *ctx;
+	unsigned int hash_len;
+	csumEVP() { ctx = EVP_MD_CTX_new(); }
+	~csumEVP() { EVP_MD_CTX_free(ctx); }
+	void add(const char *data, size_t size) override { EVP_DigestUpdate(ctx, data, size); }
+	void finish(uint8_t* ret) override { EVP_DigestFinal_ex(ctx, ret, &hash_len);; }
 };
-class csumSHA256 : public csumBase, public SHA256_CTX
+class csumSHA1 : public csumEVP, public SHA_CTX
 {
 public:
-	csumSHA256() { SHA256_Init(this); }
-	void add(const char *data, size_t size) override { SHA256_Update(this, (const void*) data, size); }
-	void finish(uint8_t* ret) override { SHA256_Final(ret, this); }
+	csumSHA1() { EVP_DigestInit_ex(ctx, EVP_sha1(), NULL); }
 };
-class csumSHA512 : public csumBase, public SHA512_CTX
+class csumSHA256 : public csumEVP, public SHA256_CTX
 {
 public:
-	csumSHA512() { SHA512_Init(this); }
-	void add(const char *data, size_t size) override { SHA512_Update(this, (const void*) data, size); }
-	void finish(uint8_t* ret) override { SHA512_Final(ret, this); }
+	csumSHA256() { EVP_DigestInit_ex(ctx, EVP_sha256(), NULL); }
 };
-class csumMD5 : public csumBase, public MD5_CTX
+class csumSHA512 : public csumEVP, public SHA512_CTX
 {
 public:
-	csumMD5() { MD5_Init(this); }
-	void add(const char *data, size_t size) override { MD5_Update(this, (const void*) data, size); }
-	void finish(uint8_t* ret) override { MD5_Final(ret, this); }
+	csumSHA512() { EVP_DigestInit_ex(ctx, EVP_sha512(), NULL); }
+};
+class csumMD5 : public csumEVP, public MD5_CTX
+{
+public:
+	csumMD5() { EVP_DigestInit_ex(ctx, EVP_md5(), NULL); }
 };
 #elif defined(HAVE_TOMCRYPT)
 class csumSHA1 : public csumBase
@@ -691,7 +694,7 @@ void ACNG_API check_algos()
 {
 #ifdef HAVE_CHECKSUM
 	const char testvec[]="abc";
-	uint8_t out[20];
+	uint8_t out[64];
 	unique_ptr<csumBase> ap(csumBase::GetChecker(CSTYPE_SHA1));
 	ap->add(testvec, sizeof(testvec)-1);
 	ap->finish(out);
@@ -707,6 +710,24 @@ void ACNG_API check_algos()
 	if (BytesToHexString(out, 16) != "900150983cd24fb0d6963f7d28e17f72")
 	{
 		cerr << "Incorrect MD5 implementation detected, check compilation settings!\n";
+		exit(EXIT_FAILURE);
+	}
+
+	ap = csumBase::GetChecker(CSTYPE_SHA256);
+	ap->add(testvec, sizeof(testvec) - 1);
+	ap->finish(out);
+	if (BytesToHexString(out, 32) != "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad")
+	{
+		cerr << "Incorrect SHA256 implementation detected, check compilation settings!\n";
+		exit(EXIT_FAILURE);
+	}
+
+	ap = csumBase::GetChecker(CSTYPE_SHA512);
+	ap->add(testvec, sizeof(testvec) - 1);
+	ap->finish(out);
+	if (BytesToHexString(out, 64) != "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f")
+	{
+		cerr << "Incorrect SHA512 implementation detected, check compilation settings!\n";
 		exit(EXIT_FAILURE);
 	}
 #endif

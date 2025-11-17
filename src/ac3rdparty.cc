@@ -37,12 +37,7 @@ void ACNG_API globalSslInit()
 		if(inited)
 				return;
 		inited = true;
-		SSL_load_error_strings();
-		ERR_load_BIO_strings();
-		ERR_load_crypto_strings();
-		ERR_load_SSL_strings();
-		OpenSSL_add_all_algorithms();
-		SSL_library_init();
+		OPENSSL_init_ssl(OPENSSL_INIT_LOAD_SSL_STRINGS, nullptr);
 
 		g_ssl_locks.resize(CRYPTO_num_locks());
 	CRYPTO_set_id_callback(get_thread_id_cb);

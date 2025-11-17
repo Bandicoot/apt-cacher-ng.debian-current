@@ -814,12 +814,7 @@ void parse_options(int argc, const char **argv, function<void (LPCSTR)> f)
 void ssl_init()
 {
 #ifdef HAVE_SSL
-	SSL_load_error_strings();
-	ERR_load_BIO_strings();
-	ERR_load_crypto_strings();
-	ERR_load_SSL_strings();
-	OpenSSL_add_all_algorithms();
-	SSL_library_init();
+	OPENSSL_init_ssl(OPENSSL_INIT_LOAD_SSL_STRINGS, nullptr);
 #endif
 }
 #endif

@@ -662,6 +662,19 @@ void job::Prepare(const header &h, string_view headBuf, cmstring& callerHostname
 		else
 			m_sFileLoc=theUrl.sHost+theUrl.sPath;
 
+		// Here we serialize multiple clients trying to download the
+		// same file. Only one thread at a time per URL is allowed to
+		// proceed further in this function.
+
+		lockuniq g{inProgressLock};
+
+		if (inProgress.contains(m_sFileLoc)) {
+				// Check if another job is running. If so link to that.
+				m_pItem = m_pParentCon.GetItemRegistry()->Create(m_sFileLoc, ESharingHow::ALWAYS_TRY_SHARING, fileitem::tSpecialPurposeAttr{});
+				USRDBG("Linked to other job");
+				return;
+				}
+
 		fileitem::tSpecialPurposeAttr attr {
 			! cfg::offlinemode && data_type == FILE_VOLATILE,
 					m_bIsHeadOnly,
@@ -697,8 +710,13 @@ void job::Prepare(const header &h, string_view headBuf, cmstring& callerHostname
 		if(cfg::trackfileuse && fistate >= fileitem::FIST_DLGOTHEAD && fistate < fileitem::FIST_DLERROR)
 			m_pItem.get()->UpdateHeadTimestamp();
 
-		if(fistate==fileitem::FIST_COMPLETE)
+		if(fistate==fileitem::FIST_COMPLETE) {
+			// Tell everybody downloading this url that we already
+			// have a job to download it and register a cleanup
+			// when this job completes.
+			setInProgress(m_sFileLoc);
 			return; // perfect, done here
+		}
 
 		if(cfg::offlinemode) { // make sure there will be no problems later in SendData or prepare a user message
 			// error or needs download but freshness check was disabled, so it's really not complete.
@@ -760,6 +778,10 @@ void job::Prepare(const header &h, string_view headBuf, cmstring& callerHostname
 				return report_overload(__LINE__);
 			}
 		}
+		// Tell everybody downloading this url that we already have a
+		// job to download it and register a cleanup when this job
+		// completes.
+		setInProgress(m_sFileLoc);
 	}
 	catch (const std::bad_alloc&) // OOM, may this ever happen here?
 	{
@@ -1190,4 +1212,16 @@ void job::AppendMetaHeaders()
 			  << "\r\nServer: Debian Apt-Cacher NG/" ACVERSION "\r\n"
 	"\r\n";
 }
+
+job::inProgressCleanup::~inProgressCleanup() {
+	lockuniq g{inProgressLock};
+	LOGSTARTFUNC;
+	USRDBG("url=" << url);
+	if (url.size()) {
+		inProgress.erase(url);
+	}
+}
+
+std::set<std::string> job::inProgress;
+base_with_mutex job::inProgressLock;
 }

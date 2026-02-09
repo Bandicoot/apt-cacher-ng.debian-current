@@ -1,3 +1,11 @@
+apt-cacher-ng (3.7.5-1.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Apply patch from Tim Woodall to transition from fuse2 to fuse3.
+    (Closes: #1084459)
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sat, 29 Nov 2025 12:38:45 +0100
+
 apt-cacher-ng (3.7.5-1) unstable; urgency=medium
 
   * New upstream version

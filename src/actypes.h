@@ -38,6 +38,7 @@
 #include <string>
 #include <limits>
 #include <memory>
+#include <cstdint>
 
 namespace acng {
 

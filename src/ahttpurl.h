@@ -3,6 +3,7 @@
 
 #include "actypes.h"
 #include "portutils.h"
+#include <cstdint>
 
 namespace acng
 {

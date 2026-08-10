@@ -2,6 +2,7 @@
 #define _ACLOGGER_H
 
 #include "acbuf.h"
+#include <cstdint>
 
 namespace acng
 {

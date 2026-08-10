@@ -3,6 +3,7 @@
 
 #include "actypes.h"
 #include <cstdio>
+#include <cstdint>
 
 #define DEFAULT_PORT_HTTP 80
 #define DEFAULT_PORT_HTTPS 443

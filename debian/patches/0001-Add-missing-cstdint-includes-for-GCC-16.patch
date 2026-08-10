@@ -1,0 +1,70 @@
+From: Edmund Lodewijks <edmund@proteamail.com>
+Date: Mon, 10 Aug 2026 21:26:17 +0200
+Subject: Add missing <cstdint> includes for GCC 16
+
+GCC 16's libstdc++ no longer pulls in <cstdint>, causing a cascade
+of errors. GCC emits the fix-it hint "probably fixable by adding
+'#include <cstdint>'" directly above them.
+
+Add the include to src/actypes.h, the common root header reached by
+every translation unit, plus the three headers GCC named explicitly
+(aclogger.h, ahttpurl.h, portutils.h) so they stay self-contained.
+
+Bug-Debian: https://bugs.debian.org/1132065
+Forwarded: https://salsa.debian.org/blade/apt-cacher-ng/-/merge_requests/27
+Last-Update: 2026-08-10
+---
+ src/aclogger.h  | 1 +
+ src/actypes.h   | 1 +
+ src/ahttpurl.h  | 1 +
+ src/portutils.h | 1 +
+ 4 files changed, 4 insertions(+)
+
+diff --git a/src/aclogger.h b/src/aclogger.h
+index 0838b76..5f378da 100644
+--- a/src/aclogger.h
++++ b/src/aclogger.h
+@@ -2,6 +2,7 @@
+ #define _ACLOGGER_H
+ 
+ #include "acbuf.h"
++#include <cstdint>
+ 
+ namespace acng
+ {
+diff --git a/src/actypes.h b/src/actypes.h
+index 0d910b2..69f9bdd 100644
+--- a/src/actypes.h
++++ b/src/actypes.h
+@@ -38,6 +38,7 @@
+ #include <string>
+ #include <limits>
+ #include <memory>
++#include <cstdint>
+ 
+ namespace acng {
+ 
+diff --git a/src/ahttpurl.h b/src/ahttpurl.h
+index 1f634c5..653cc96 100644
+--- a/src/ahttpurl.h
++++ b/src/ahttpurl.h
+@@ -3,6 +3,7 @@
+ 
+ #include "actypes.h"
+ #include "portutils.h"
++#include <cstdint>
+ 
+ namespace acng
+ {
+diff --git a/src/portutils.h b/src/portutils.h
+index 1d04c7b..da90731 100644
+--- a/src/portutils.h
++++ b/src/portutils.h
+@@ -3,6 +3,7 @@
+ 
+ #include "actypes.h"
+ #include <cstdio>
++#include <cstdint>
+ 
+ #define DEFAULT_PORT_HTTP 80
+ #define DEFAULT_PORT_HTTPS 443
